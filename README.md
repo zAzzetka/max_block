@@ -1,15 +1,32 @@
-# MAX Messenger Blocker
+<p align="center">
+  <img src="https://vercel.app" alt="Header Banner" />
+</p>
 
-A lightweight Windows batch script designed to block the operation of the MAX messenger application on a local system.
+# Блокировщик работы Мессенджера Max
 
-## Features
-* Automatically terminates active processes of the MAX messenger.
-* Blocks necessary application files or network endpoints to prevent the messenger from running.
+Легковесный пакетный скрипт Windows для блокировки работы приложения-мессенджера MAX на локальной системе.
 
-## How to Use
-1. Download the `max_block.bat` file to your computer.
-2. Right-click on the file and select **"Run as administrator"**.
-3. Follow any on-screen prompts in the command line window.
+---
 
-## Disclaimer
-This script is provided for educational and administrative purposes only. Ensure you have the proper authorization before restricting application usage on a computer.
+## Стек технологий
+<p align="left">
+  <img src="https://shields.io" alt="Windows" />
+  <img src="https://shields.io" alt="Shell" />
+  <img src="https://shields.io" alt="Visual Studio" />
+</p>
+
+## Возможности
+
+* **Принудительное завершение:** Автоматически закрывает все активные процессы мессенджера MAX.
+* **Блокировка запуска:** Ограничивает доступ к исполняемым файлам или сетевым адресам приложения.
+
+## Инструкция по использованию
+
+1. Скачайте файл `max_block.bat` из данного репозитория на свой компьютер.
+2. Нажмите правой кнопкой мыши по файлу и выберите **"Запуск от имени администратора"**.
+3. Следуйте текстовым инструкциям в открывшемся окне командной строки.
+
+## Отказ от ответственности
+
+> [!IMPORTANT]
+> Данный скрипт предоставлен исключительно в ознакомительных и административных целях. Перед ограничением работы программного обеспечения на целевом компьютере убедитесь, что у вас есть все необходимые полномочия и разрешения. Автор не несет ответственности за возможные последствия использования скрипта.
