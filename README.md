@@ -1,15 +1,21 @@
-# MAX Messenger Blocker
+# zAzzetka
 
-A lightweight Windows batch script designed to block the operation of the MAX messenger application on a local system.
+## About Me
+Windows administrator and developer focusing on system automation, scripting, and desktop optimization. 
 
-## Features
-* Automatically terminates active processes of the MAX messenger.
-* Blocks necessary application files or network endpoints to prevent the messenger from running.
+## Technologies and Tools
+<p align="left">
+  <img src="https://shields.io" alt="Windows" />
+  <img src="https://shields.io" alt="Visual Studio" />
+  <img src="https://shields.io" alt="Git" />
+  <img src="https://shields.io" alt="GitHub" />
+</p>
 
-## How to Use
-1. Download the `max_block.bat` file to your computer.
-2. Right-click on the file and select **"Run as administrator"**.
-3. Follow any on-screen prompts in the command line window.
+## Projects
+* [MAX Messenger Blocker](https://github.com) - A lightweight Windows batch script designed to block and terminate the MAX messenger application on a local system.
 
-## Disclaimer
-This script is provided for educational and administrative purposes only. Ensure you have the proper authorization before restricting application usage on a computer.
+## GitHub Statistics
+<p align="left">
+  <img src="https://vercel.app" alt="zAzzetka GitHub Stats" height="150" />
+  <img src="https://vercel.app" alt="Top Languages" height="150" />
+</p>
