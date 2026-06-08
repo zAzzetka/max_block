@@ -16,41 +16,38 @@ if %errorLevel% neq 0 (
 :MENU
 cls
 echo ========================================================
-echo УТИЛИТА СЕТЕВОЙ ИЗОЛЯЦИИ MAX MESSENGER (VK)
+echo УТИЛИТА СЕТЕВОЙ ИЗОЛЯЦИИ MAX MESSENGER (ВЕРСИЯ 4.0)
 echo ========================================================
 echo 1. Отключение доступа к сети и сайту (Firewall + Hosts)
 echo 2. Запрет на запуск exe (Реестр + Блокировка процессов)
-echo 3. Отключение блокировки (Полное восстановление доступа)
-echo 4. Выход
+echo 3. Добавить скрипт в автозапуск Windows (Каждый запуск ПК)
+echo 4. Убрать скрипт из автозапуска Windows
+echo 5. Отключить блокировки (Полное восстановление системы)
+echo 6. Выход
 echo ========================================================
-set /p choice="Выберите действие (1-4): "
+set /p choice="Выберите действие (1-6): "
 
 if "%choice%"=="1" goto BLOCK_NET
 if "%choice%"=="2" goto BLOCK_EXE
-if "%choice%"=="3" goto UNBLOCK_ALL
-if "%choice%"=="4" exit
+if "%choice%"=="3" goto ADD_AUTOSTART
+if "%choice%"=="4" goto REMOVE_AUTOSTART
+if "%choice%"=="5" goto UNBLOCK_ALL
+if "%choice%"=="6" exit
 goto MENU
 
 :BLOCK_NET
 cls
 echo [1/2] Настройка брандмауэра Windows (IP + Порты)...
-:: Очистка старых сетевых правил, чтобы избежать дублирования
 netsh advfirewall firewall delete rule name="MAX_Core_IP_Block" >nul 2>&1
 netsh advfirewall firewall delete rule name="MAX_VK_Subnets_Block" >nul 2>&1
 netsh advfirewall firewall delete rule name="MAX_Ports_Block" >nul 2>&1
 
-:: Блокировка статических IP-адресов мессенджера MAX
 netsh advfirewall firewall add rule name="MAX_Core_IP_Block" dir=out action=block remoteip="217.20.155.18,155.212.204.140,155.212.204.5,155.212.204.74" enable=yes >nul
-
-:: Блокировка ключевых подсетей VK, отвечающих за передачу данных приложения
 netsh advfirewall firewall add rule name="MAX_VK_Subnets_Block" dir=out action=block remoteip="95.163.0.0/16,217.20.144.0/20,217.20.155.0/24,87.240.128.0/19,185.16.150.0/22,185.30.168.0/22,128.140.168.0/21,178.22.88.0/21" enable=yes >nul
-
-:: Блокировка сетевых UDP-портов WebRTC/STUN, через которые мессенджер обходит HTTP-прокси
 netsh advfirewall firewall add rule name="MAX_Ports_Block" dir=out action=block protocol=UDP remoteport=3478,19302,50000-65535 enable=yes >nul
 
 echo [2/2] Модификация файла hosts (DNS-изоляция)...
 set HOSTS_FILE=%WINDIR%\System32\drivers\etc\hosts
-
 findstr /C:"# MAX_BLOCK_START" "%HOSTS_FILE%" >nul
 if %errorlevel% equ 0 (
     echo Записи в файле hosts уже существуют. Пропускаю.
@@ -81,7 +78,6 @@ if %errorlevel% equ 0 (
     echo # MAX_BLOCK_END>>"%HOSTS_FILE%"
     ipconfig /flushdns >nul
 )
-
 echo.
 echo [УСПЕШНО] Сетевой доступ к серверам и сайту MAX заблокирован.
 pause
@@ -94,7 +90,6 @@ taskkill /F /IM max.exe >nul 2>&1
 taskkill /F /IM max_updater.exe >nul 2>&1
 
 echo [2/3] Запрет на запуск исполняемых файлов в реестре Windows...
-:: Подменяем отладчик файлов на фиктивную команду. ОС откажется их запускать.
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\max.exe" /v Debugger /t REG_SZ /d "ntsd -d" /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\max_updater.exe" /v Debugger /t REG_SZ /d "ntsd -d" /f >nul 2>&1
 
@@ -104,6 +99,34 @@ schtasks /delete /tn "MAX AutoUpdate" /f >nul 2>&1
 
 echo.
 echo [УСПЕШНО] Запуск файлов max.exe заблокирован на уровне системы.
+pause
+goto MENU
+
+:ADD_AUTOSTART
+cls
+echo Создание фоновой задачи в Планировщике Windows...
+:: Создает задачу, которая запускает этот конкретный батник при входе любого пользователя с наивысшими правами
+schtasks /create /tn "MaxBlockerAutoRun" /tr "\"%~dpnx0\" 1" /sc onlogon /rl highest /f >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo [УСПЕШНО] Скрипт добавлен в автозапуск. 
+    echo Теперь при каждом включении ПК блокировка сети будет обновляться автоматически.
+) else (
+    echo [ОШИБКА] Не удалось создать задачу в планировщике.
+)
+pause
+goto MENU
+
+:REMOVE_AUTOSTART
+cls
+echo Удаление задачи автозапуска из системы...
+schtasks /delete /tn "MaxBlockerAutoRun" /f >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo [УСПЕШНО] Скрипт успешно удален из автозапуска.
+) else (
+    echo [ИНФО] Задача автозапуска не найдена или уже удалена.
+)
 pause
 goto MENU
 
