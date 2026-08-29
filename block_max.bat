@@ -3,13 +3,29 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+set "SELF=%~dpnx0"
+set "TASK_NAME=MaxBlockerAutoRun"
+set "VBS_PATH=%~dp0max_block_silent.vbs"
+set "HOSTS_FILE=%WINDIR%\System32\drivers\etc\hosts"
+
 :: ========================================================
-:: Проверка прав администратора
+:: Тихий режим: вызывается Планировщиком заданий при входе в систему.
+:: Аргумент "1" означает "просто применить блокировку и выйти",
+:: без показа меню и без пауз.
+:: ========================================================
+if "%~1"=="1" (
+    call :BLOCK_NET
+    call :BLOCK_EXE
+    exit /b
+)
+
+:: ========================================================
+:: Проверка прав администратора (только для интерактивного режима)
 :: ========================================================
 net session >nul 2>&1
 if %errorLevel% neq 0 (
     echo Требуются права администратора. Запрос повышения прав...
-    powershell -Command "Start-Process '%~dpnx0' -Verb RunAs"
+    powershell -Command "Start-Process '%SELF%' -Verb RunAs"
     exit /b
 )
 
@@ -27,16 +43,30 @@ echo 6. Выход
 echo ========================================================
 set /p choice="Выберите действие (1-6): "
 
-if "%choice%"=="1" goto BLOCK_NET
-if "%choice%"=="2" goto BLOCK_EXE
+if "%choice%"=="1" (
+    call :BLOCK_NET
+    pause
+    goto MENU
+)
+if "%choice%"=="2" (
+    call :BLOCK_EXE
+    pause
+    goto MENU
+)
 if "%choice%"=="3" goto ADD_AUTOSTART
 if "%choice%"=="4" goto REMOVE_AUTOSTART
-if "%choice%"=="5" goto UNBLOCK_ALL
+if "%choice%"=="5" (
+    call :UNBLOCK_ALL
+    pause
+    goto MENU
+)
 if "%choice%"=="6" exit
 goto MENU
 
+:: ========================================================
+:: Блокировка сети (Firewall + Hosts)
+:: ========================================================
 :BLOCK_NET
-cls
 echo [1/2] Настройка брандмауэра Windows (IP + Порты)...
 netsh advfirewall firewall delete rule name="MAX_Core_IP_Block" >nul 2>&1
 netsh advfirewall firewall delete rule name="MAX_VK_Subnets_Block" >nul 2>&1
@@ -47,44 +77,58 @@ netsh advfirewall firewall add rule name="MAX_VK_Subnets_Block" dir=out action=b
 netsh advfirewall firewall add rule name="MAX_Ports_Block" dir=out action=block protocol=UDP remoteport=3478,19302,50000-65535 enable=yes >nul
 
 echo [2/2] Модификация файла hosts (DNS-изоляция)...
-set HOSTS_FILE=%WINDIR%\System32\drivers\etc\hosts
-findstr /C:"# MAX_BLOCK_START" "%HOSTS_FILE%" >nul
-if %errorlevel% equ 0 (
-    echo Записи в файле hosts уже существуют. Пропускаю.
-) else (
-    echo.>>"%HOSTS_FILE%"
-    echo # MAX_BLOCK_START>>"%HOSTS_FILE%"
-    echo 127.0.0.1 max.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 web.max.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 st.max.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 dev.max.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 download.max.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 platform-api.max.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 oneme.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 my.com>>"%HOSTS_FILE%"
-    echo 127.0.0.1 okcdn.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 calls.okcdn.ru>>"%HOSTS_FILE%"
-    echo 127.0.0.1 im.vk.me>>"%HOSTS_FILE%"
-    echo 127.0.0.1 static.vk.me>>"%HOSTS_FILE%"
-    echo 127.0.0.1 ://vk.com>>"%HOSTS_FILE%"
-    echo 127.0.0.1 ://vk.com>>"%HOSTS_FILE%"
-    echo 127.0.0.1 api.ipify.org>>"%HOSTS_FILE%"
-    echo 127.0.0.1 api64.ipify.org>>"%HOSTS_FILE%"
-    echo 127.0.0.1 ://amazonaws.com>>"%HOSTS_FILE%"
-    echo 127.0.0.1 ifconfig.me>>"%HOSTS_FILE%"
-    echo 127.0.0.1 icanhazip.com>>"%HOSTS_FILE%"
-    echo 127.0.0.1 ipinfo.io>>"%HOSTS_FILE%"
-    echo 127.0.0.1 whoer.net>>"%HOSTS_FILE%"
-    echo # MAX_BLOCK_END>>"%HOSTS_FILE%"
-    ipconfig /flushdns >nul
-)
+:: Сначала убираем старый блок (если есть), затем пишем актуальный список.
+:: Это гарантирует, что при повторном запуске новые домены тоже попадут в hosts.
+call :STRIP_HOSTS_BLOCK
+(
+echo.
+echo # MAX_BLOCK_START
+echo 127.0.0.1 max.ru
+echo 127.0.0.1 web.max.ru
+echo 127.0.0.1 st.max.ru
+echo 127.0.0.1 dev.max.ru
+echo 127.0.0.1 download.max.ru
+echo 127.0.0.1 platform-api.max.ru
+echo 127.0.0.1 oneme.ru
+echo 127.0.0.1 api2.oneme.ru
+echo 127.0.0.1 my.com
+echo 127.0.0.1 okcdn.ru
+echo 127.0.0.1 calls.okcdn.ru
+echo 127.0.0.1 im.vk.me
+echo 127.0.0.1 static.vk.me
+echo 127.0.0.1 vk.com
+echo 127.0.0.1 www.vk.com
+echo 127.0.0.1 api.ipify.org
+echo 127.0.0.1 api64.ipify.org
+echo 127.0.0.1 ifconfig.me
+echo 127.0.0.1 icanhazip.com
+echo 127.0.0.1 ipinfo.io
+echo 127.0.0.1 whoer.net
+echo # MAX_BLOCK_END
+) >> "%HOSTS_FILE%"
+ipconfig /flushdns >nul
+
 echo.
 echo [УСПЕШНО] Сетевой доступ к серверам и сайту MAX заблокирован.
-pause
-goto MENU
+exit /b
 
+:: Вспомогательная подпрограмма: вырезает старый блок MAX_BLOCK_START..END из hosts
+:STRIP_HOSTS_BLOCK
+set "TEMP_HOSTS=%TEMP%\hosts_temp.txt"
+set in_block=0
+(for /f "delims=" %%a in ('type "%HOSTS_FILE%"') do (
+    set "line=%%a"
+    if "!line!"=="# MAX_BLOCK_START" (set in_block=1)
+    if !in_block! equ 0 (echo %%a)
+    if "!line!"=="# MAX_BLOCK_END" (set in_block=0)
+)) > "%TEMP_HOSTS%"
+move /Y "%TEMP_HOSTS%" "%HOSTS_FILE%" >nul
+exit /b
+
+:: ========================================================
+:: Запрет на запуск exe
+:: ========================================================
 :BLOCK_EXE
-cls
 echo [1/3] Принудительное закрытие запущенных копий приложения...
 taskkill /F /IM max.exe >nul 2>&1
 taskkill /F /IM max_updater.exe >nul 2>&1
@@ -99,18 +143,25 @@ schtasks /delete /tn "MAX AutoUpdate" /f >nul 2>&1
 
 echo.
 echo [УСПЕШНО] Запуск файлов max.exe заблокирован на уровне системы.
-pause
-goto MENU
+exit /b
 
+:: ========================================================
+:: Автозапуск (через скрытый VBS-лаунчер, без мелькания консоли)
+:: ========================================================
 :ADD_AUTOSTART
 cls
+echo Создание файла скрытого запуска...
+(
+echo Set WshShell = CreateObject("WScript.Shell"^)
+echo WshShell.Run "cmd /c ""%SELF%"" 1", 0, False
+) > "%VBS_PATH%"
+
 echo Создание фоновой задачи в Планировщике Windows...
-:: Создает задачу, которая запускает этот конкретный батник при входе любого пользователя с наивысшими правами
-schtasks /create /tn "MaxBlockerAutoRun" /tr "\"%~dpnx0\" 1" /sc onlogon /rl highest /f >nul 2>&1
+schtasks /create /tn "%TASK_NAME%" /tr "wscript.exe \"%VBS_PATH%\"" /sc onlogon /rl highest /f >nul 2>&1
 
 if %errorlevel% equ 0 (
-    echo [УСПЕШНО] Скрипт добавлен в автозапуск. 
-    echo Теперь при каждом включении ПК блокировка сети будет обновляться автоматически.
+    echo [УСПЕШНО] Скрипт добавлен в автозапуск.
+    echo Теперь при каждом входе в систему блокировка сети и exe будет обновляться автоматически, без окна консоли.
 ) else (
     echo [ОШИБКА] Не удалось создать задачу в планировщике.
 )
@@ -120,7 +171,8 @@ goto MENU
 :REMOVE_AUTOSTART
 cls
 echo Удаление задачи автозапуска из системы...
-schtasks /delete /tn "MaxBlockerAutoRun" /f >nul 2>&1
+schtasks /delete /tn "%TASK_NAME%" /f >nul 2>&1
+del "%VBS_PATH%" >nul 2>&1
 
 if %errorlevel% equ 0 (
     echo [УСПЕШНО] Скрипт успешно удален из автозапуска.
@@ -130,8 +182,10 @@ if %errorlevel% equ 0 (
 pause
 goto MENU
 
+:: ========================================================
+:: Полный откат всех блокировок
+:: ========================================================
 :UNBLOCK_ALL
-cls
 echo [1/3] Снятие ограничений на запуск EXE в реестре...
 reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\max.exe" /f >nul 2>&1
 reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\max_updater.exe" /f >nul 2>&1
@@ -142,19 +196,9 @@ netsh advfirewall firewall delete rule name="MAX_VK_Subnets_Block" >nul 2>&1
 netsh advfirewall firewall delete rule name="MAX_Ports_Block" >nul 2>&1
 
 echo [3/3] Восстановление оригинального файла hosts...
-set HOSTS_FILE=%WINDIR%\System32\drivers\etc\hosts
-set TEMP_HOSTS=%TEMP%\hosts_temp.txt
-set in_block=0
-(for /f "delims=" %%a in ('type "%HOSTS_FILE%"') do (
-    set "line=%%a"
-    if "!line!"=="# MAX_BLOCK_START" (set in_block=1)
-    if !in_block! equ 0 (echo %%a)
-    if "!line!"=="# MAX_BLOCK_END" (set in_block=0)
-)) > "%TEMP_HOSTS%"
-move /Y "%TEMP_HOSTS%" "%HOSTS_FILE%" >nul
+call :STRIP_HOSTS_BLOCK
 ipconfig /flushdns >nul
 
 echo.
 echo [УСПЕШНО] Все виды блокировок сняты. Система полностью восстановлена.
-pause
-goto MENU
+exit /b
