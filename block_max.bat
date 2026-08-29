@@ -73,7 +73,7 @@ netsh advfirewall firewall delete rule name="MAX_VK_Subnets_Block" >nul 2>&1
 netsh advfirewall firewall delete rule name="MAX_Ports_Block" >nul 2>&1
 
 netsh advfirewall firewall add rule name="MAX_Core_IP_Block" dir=out action=block remoteip="217.20.155.18,155.212.204.140,155.212.204.5,155.212.204.74" enable=yes >nul
-netsh advfirewall firewall add rule name="MAX_VK_Subnets_Block" dir=out action=block remoteip="95.163.0.0/16,217.20.144.0/20,217.20.155.0/24,87.240.128.0/19,185.16.150.0/22,185.30.168.0/22,128.140.168.0/21,178.22.88.0/21" enable=yes >nul
+netsh advfirewall firewall add rule name="MAX_VK_Subnets_Block" dir=out action=block remoteip="95.163.0.0/16,217.20.144.0/20,217.20.155.0/24,155.212.204.0/24,87.240.128.0/19,185.16.150.0/22,185.30.168.0/22,128.140.168.0/21,178.22.88.0/21" enable=yes >nul
 netsh advfirewall firewall add rule name="MAX_Ports_Block" dir=out action=block protocol=UDP remoteport=3478,19302,50000-65535 enable=yes >nul
 
 echo [2/2] Модификация файла hosts (DNS-изоляция)...
@@ -89,11 +89,19 @@ echo 127.0.0.1 st.max.ru
 echo 127.0.0.1 dev.max.ru
 echo 127.0.0.1 download.max.ru
 echo 127.0.0.1 platform-api.max.ru
+echo 127.0.0.1 platform-api2.max.ru
 echo 127.0.0.1 oneme.ru
+echo 127.0.0.1 api.oneme.ru
 echo 127.0.0.1 api2.oneme.ru
+echo 127.0.0.1 i.oneme.ru
+echo 127.0.0.1 ws-api.oneme.ru
 echo 127.0.0.1 my.com
 echo 127.0.0.1 okcdn.ru
 echo 127.0.0.1 calls.okcdn.ru
+echo 127.0.0.1 iv.okcdn.ru
+echo 127.0.0.1 apptracer.ru
+echo 127.0.0.1 sdk-api.apptracer.ru
+echo 127.0.0.1 trace-flow.ru
 echo 127.0.0.1 im.vk.me
 echo 127.0.0.1 static.vk.me
 echo 127.0.0.1 vk.com
@@ -104,6 +112,10 @@ echo 127.0.0.1 ifconfig.me
 echo 127.0.0.1 icanhazip.com
 echo 127.0.0.1 ipinfo.io
 echo 127.0.0.1 whoer.net
+echo 127.0.0.1 checkip.amazonaws.com
+echo 127.0.0.1 ip.mail.ru
+echo 127.0.0.1 ipv4-internet.yandex.net
+echo 127.0.0.1 ipv6-internet.yandex.net
 echo # MAX_BLOCK_END
 ) >> "%HOSTS_FILE%"
 ipconfig /flushdns >nul

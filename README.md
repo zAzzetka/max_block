@@ -50,11 +50,15 @@
 ## Что именно блокируется
 
 **Брандмауэр (исходящий трафик):**
-- Известные IP-адреса и подсети инфраструктуры MAX / VK.
+- Известные IP-адреса и подсети инфраструктуры MAX / VK, включая диапазон `155.212.204.0/24`, где расположены основные серверы MAX.
 - WebRTC/голосовые порты (UDP 3478, 19302, 50000–65535) — блокирует звонки, даже если основной трафик обойдёт другие правила.
 
 **Файл `hosts` (DNS-изоляция):**
-`max.ru`, `web.max.ru`, `st.max.ru`, `dev.max.ru`, `download.max.ru`, `platform-api.max.ru`, `oneme.ru`, `api2.oneme.ru`, `my.com`, `okcdn.ru`, `calls.okcdn.ru`, `im.vk.me`, `static.vk.me`, `vk.com`, `www.vk.com`, а также сервисы определения внешнего IP (`api.ipify.org`, `api64.ipify.org`, `ifconfig.me`, `icanhazip.com`, `ipinfo.io`, `whoer.net`) — чтобы приложение не могло определить реальный IP в обход блокировки.
+- Основные домены сервиса: `max.ru`, `web.max.ru`, `st.max.ru`, `dev.max.ru`, `download.max.ru`, `platform-api.max.ru`, `platform-api2.max.ru`.
+- API-инфраструктура (домен `oneme.ru`, на который перешёл бэкенд MAX): `oneme.ru`, `api.oneme.ru`, `api2.oneme.ru`, `i.oneme.ru`, `ws-api.oneme.ru`.
+- Инфраструктура VK/OK, которую использует MAX для звонков и медиа: `okcdn.ru`, `calls.okcdn.ru`, `iv.okcdn.ru`, `my.com`, `im.vk.me`, `static.vk.me`, `vk.com`, `www.vk.com`.
+- Встроенная телеметрия/трекинг-SDK: `apptracer.ru`, `sdk-api.apptracer.ru`, `trace-flow.ru`.
+- Сервисы определения внешнего IP, которые MAX опрашивает в обход собственных STUN-серверов (по данным независимых разборов трафика приложение так проверяет, не используете ли вы VPN): `api.ipify.org`, `api64.ipify.org`, `ifconfig.me`, `icanhazip.com`, `ipinfo.io`, `whoer.net`, `checkip.amazonaws.com`, `ip.mail.ru`, `ipv4-internet.yandex.net`, `ipv6-internet.yandex.net`.
 
 **Реестр:**
 - `Image File Execution Options` для `max.exe` и `max_updater.exe` — при попытке запуска процесс сразу завершается.
@@ -83,6 +87,8 @@
 - **`hosts` теперь обновляется каждый раз заново** (старый блок снимается, актуальный дописывается), а не пропускается, если уже был добавлен ранее — иначе новые домены не подхватывались бы у тех, кто уже запускал скрипт.
 - Убраны битые и задвоенные записи в `hosts` (`://vk.com` дважды, `://amazonaws.com` — слишком широкий домен, общий для тысяч не связанных с MAX сервисов).
 - Добавлен домен `api2.oneme.ru` в список блокировки.
+- По данным разборов трафика MAX (Хабр, Хакер, issue-трекеры инструментов обхода блокировок) добавлены домены `api.oneme.ru`, `i.oneme.ru`, `ws-api.oneme.ru`, `platform-api2.max.ru`, `iv.okcdn.ru`, `apptracer.ru`, `sdk-api.apptracer.ru`, `trace-flow.ru`, а также IP-check сервисы `checkip.amazonaws.com`, `ip.mail.ru`, `ipv4-internet.yandex.net`, `ipv6-internet.yandex.net`.
+- В брандмауэр добавлена подсеть `155.212.204.0/24`, где расположены основные серверы MAX.
 
 ## Отказ от ответственности
 
