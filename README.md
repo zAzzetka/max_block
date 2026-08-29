@@ -1,7 +1,5 @@
 <div align="center">
 
-![MAX Block](https://cdn.jsdelivr.net/gh/zAzzetka/max_block@main/assets/banner.svg)
-
 **Комплексная локальная блокировка мессенджера MAX на Windows**
 через брандмауэр, `hosts`, реестр и Планировщик заданий — без стороннего софта.
 
