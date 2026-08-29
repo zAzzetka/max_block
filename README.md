@@ -1,5 +1,7 @@
 <div align="center">
 
+![MAX Block](assets/banner.svg)
+
 **Комплексная локальная блокировка мессенджера MAX на Windows**
 через брандмауэр, `hosts`, реестр и Планировщик заданий — без стороннего софта.
 
@@ -82,7 +84,7 @@ flowchart TD
    При обычном запуске скрипт сам предложит повышение прав через UAC.
 3. В открывшемся меню введите номер нужного действия и нажмите **Enter**.
 
-![Меню block_max.bat](https://cdn.jsdelivr.net/gh/zAzzetka/max_block@main/assets/menu-preview.svg)
+![Меню block_max.bat](assets/menu-preview.svg)
 
 ## Меню скрипта
 
