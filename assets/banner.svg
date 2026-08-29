@@ -1,0 +1,53 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A0A0C"/>
+      <stop offset="1" stop-color="#151517"/>
+    </linearGradient>
+    <clipPath id="winClip">
+      <rect x="560" y="60" width="590" height="280" rx="12"/>
+    </clipPath>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="400" fill="url(#bg)"/>
+
+  <line x1="520" y1="60" x2="520" y2="340" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"/>
+
+  <text x="70" y="86" font-family="Consolas, 'Cascadia Code', monospace" font-size="13" letter-spacing="3" fill="#4FC1FF">WINDOWS · CMD / BAT</text>
+
+  <text x="68" y="172" font-family="Consolas, 'Cascadia Code', monospace" font-size="86" font-weight="800" fill="#E9E9EC">MAX</text>
+  <rect x="60" y="147" width="230" height="15" rx="3" fill="#E5484D" fill-opacity="0.88" transform="rotate(-7 175 155)"/>
+
+  <text x="68" y="248" font-family="Consolas, 'Cascadia Code', monospace" font-size="62" font-weight="700" letter-spacing="2" fill="none" stroke="#E9E9EC" stroke-width="2">BLOCK</text>
+
+  <text x="70" y="288" font-family="Segoe UI, -apple-system, sans-serif" font-size="17" fill="#9A9AA2">
+    <tspan x="70" dy="0">Firewall, hosts, реестр и автозапуск —</tspan>
+    <tspan x="70" dy="24">мессенджер MAX больше не подключится</tspan>
+    <tspan x="70" dy="24">и не запустится на этом компьютере.</tspan>
+  </text>
+
+  <text x="70" y="368" font-family="Consolas, 'Cascadia Code', monospace" font-size="13" fill="#6C6C72">Windows 10 / 11   ·   Batch (.bat)   ·   GPL-2.0</text>
+
+  <g filter="url(#shadow)">
+    <g clip-path="url(#winClip)">
+      <rect x="560" y="60" width="590" height="280" fill="#0B0B0D"/>
+      <rect x="560" y="60" width="590" height="34" fill="#1C1C1F"/>
+      <text x="580" y="82" font-family="Consolas, 'Cascadia Code', monospace" font-size="14" fill="#4FC1FF">&gt;_</text>
+      <text x="606" y="82" font-family="Segoe UI, -apple-system, sans-serif" font-size="12" fill="#B7B7BC">Командная строка — block_max.bat (администратор)</text>
+      <text x="1080" y="83" font-family="Segoe UI, -apple-system, sans-serif" font-size="13" fill="#8A8A90">—</text>
+      <text x="1105" y="82" font-family="Segoe UI, -apple-system, sans-serif" font-size="12" fill="#8A8A90">▢</text>
+      <text x="1128" y="83" font-family="Segoe UI, -apple-system, sans-serif" font-size="14" fill="#8A8A90">×</text>
+
+      <text x="580" y="132" font-family="Consolas, 'Cascadia Code', monospace" font-size="14.5" fill="#D4D4D4"><tspan fill="#4FC1FF">C:\Tools\MaxBlock&gt;</tspan>block_max.bat 1</text>
+      <text x="580" y="180" font-family="Consolas, 'Cascadia Code', monospace" font-size="14.5" fill="#9A9AA2">[1/2] Настройка брандмауэра Windows (IP + Порты)...</text>
+      <text x="580" y="204" font-family="Consolas, 'Cascadia Code', monospace" font-size="14.5" fill="#9A9AA2">[2/2] Модификация файла hosts (DNS-изоляция)...</text>
+      <text x="580" y="252" font-family="Consolas, 'Cascadia Code', monospace" font-size="14.5" fill="#D4D4D4"><tspan fill="#3FB950">[УСПЕШНО]</tspan> Сетевой доступ к MAX заблокирован.</text>
+      <text x="580" y="276" font-family="Consolas, 'Cascadia Code', monospace" font-size="14.5" fill="#D4D4D4"><tspan fill="#3FB950">[УСПЕШНО]</tspan> Запуск max.exe заблокирован в системе.</text>
+      <text x="580" y="324" font-family="Consolas, 'Cascadia Code', monospace" font-size="14.5" fill="#4FC1FF">C:\Tools\MaxBlock&gt;</text>
+      <rect x="745" y="311" width="9" height="16" fill="#D4D4D4"/>
+    </g>
+  </g>
+</svg>
