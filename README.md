@@ -3,6 +3,12 @@
 **Комплексная локальная блокировка мессенджера MAX на Windows**
 через брандмауэр, `hosts`, реестр и Планировщик заданий.
 
+---
+
+# ВНИМАНИЕ!!!
+
+# **На данный момент скрипт не работает и ведётся исправление бага заранее извиняюсь.**
+
 ![License](https://img.shields.io/badge/license-GPL--2.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4)
 ![Made with](https://img.shields.io/badge/made%20with-Batch%20(.bat)-89e051)
