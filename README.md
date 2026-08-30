@@ -1,19 +1,19 @@
 <div align="center">
 
-**Комплексная локальная блокировка мессенджера MAX на Windows**
-через брандмауэр, `hosts`, реестр и Планировщик заданий.
+# **MAX Blocker для Windows**
+
+Простой `.bat`-скрипт для блокировки мессенджера MAX на Windows.
 
 ---
 
-# ВНИМАНИЕ!!!
+# ⚠️ ВНИМАНИЕ!
 
-# **На данный момент скрипт не работает и ведётся исправление бага заранее извиняюсь.**
+**Сейчас скрипт не работает. Нашёл баг, уже занимаюсь исправлением. Извиняюсь за неудобства!**
 
 ![License](https://img.shields.io/badge/license-GPL--2.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4)
 ![Made with](https://img.shields.io/badge/made%20with-Batch%20(.bat)-89e051)
 ![Admin required](https://img.shields.io/badge/requires-администратор-E5484D)
-![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
 
 </div>
 
