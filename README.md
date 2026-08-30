@@ -4,12 +4,6 @@
 
 Простой `.bat`-скрипт для блокировки мессенджера MAX на Windows.
 
----
-
-# ВНИМАНИЕ!!!!
-
-**Сейчас скрипт не работает. Нашёл баг, уже занимаюсь исправлением. Извиняюсь за неудобства!**
-
 ![License](https://img.shields.io/badge/license-GPL--2.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4)
 ![Made with](https://img.shields.io/badge/made%20with-Batch%20(.bat)-89e051)
